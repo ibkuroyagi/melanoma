@@ -20,5 +20,4 @@ coverage.xml*
 input/
 
 # recipe related
-workspace/src/exp/*.pt
-workspace/exp/*.pt
+workspace/exp/*/*.pt
