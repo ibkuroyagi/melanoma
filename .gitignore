@@ -1,0 +1,24 @@
+# general
+*~
+*.pyc
+\#*\#
+.\#*
+*DS_Store
+out.txt
+slurm-*.out
+tmp*
+__pycache__/
+.coverage*
+coverage.xml*
+.vscode*
+.nfs*
+.python-version
+.worktree
+*.log
+
+# tools related
+input/
+
+# recipe related
+workspace/src/exp/*.pt
+workspace/exp/*.pt

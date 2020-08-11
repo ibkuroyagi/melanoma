@@ -1,0 +1,24 @@
+'No': 2
+TTA: 3
+batch_size: 64
+config: config/config256-2.yaml
+epoch: 20
+es_patience: 5
+factor: 0.3
+fig_size: 256
+hair: 4
+in_features: 1408
+lr: 0.001
+microscope: 0.5
+n_split: 5
+num_workers: 4
+pass_list:
+- 1
+- 2
+- 3
+patience: 2
+pin_memory: false
+pretrained: efficientnet-b2
+resume: null
+seed: 42
+verbose: 1
