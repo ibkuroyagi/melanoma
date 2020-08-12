@@ -8,7 +8,7 @@ pretrained: efficientnet-b2
 # training related
 n_split: 5
 batch_size: 64
-epoch: 20
+epoch: 40
 lr: 0.001
 es_patience: 5
 patience: 2

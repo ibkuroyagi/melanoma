@@ -7,7 +7,7 @@ in_features: 1280
 pretrained: efficientnet-b0
 # training related
 n_split: 5
-batch_size: 8
+batch_size: 12
 epoch: 30
 lr: 0.001
 es_patience: 5

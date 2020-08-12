@@ -119,7 +119,6 @@ def main():
 
     skf = KFold(n_splits=config["n_split"], shuffle=True, random_state=config["seed"])
     for fold, (idxT, idxV) in enumerate(skf.split(np.arange(15)), 1):
-
         print("=" * 20, "Fold", fold, "=" * 20)
         val_idx = train_df.loc[train_df["fold"].isin(idxV)].index
         val = MelanomaDataset(
@@ -150,7 +149,7 @@ def main():
         val_preds = torch.zeros((len(val_idx), 1), dtype=torch.float32, device=device)
         with torch.no_grad():
             # Predicting on validation set once again to obtain data for OOF
-            for j, (x_val, y_val) in enumerate(tqdm(val_loader)):
+            for j, (x_val, y_val) in enumerate(val_loader):
                 x_val[0] = x_val[0].to(device).float()
                 x_val[1] = x_val[1].to(device).float()
                 y_val = y_val.to(device).float()
@@ -164,7 +163,7 @@ def main():
 
             # Predicting on test set
             for _ in range(config["TTA"]):
-                for i, x_test in enumerate(tqdm(test_loader)):
+                for i, x_test in enumerate(test_loader):
                     x_test[0] = x_test[0].to(device).float()
                     x_test[1] = x_test[1].to(device).float()
                     z_test = model(x_test)
@@ -178,8 +177,7 @@ def main():
         del val, val_loader, x_val, y_val
         gc.collect()
     preds /= skf.n_splits
-    print("OOF acc: {:.3f}".format(accuracy_score(train_df["target"], oof)))
-    print("OOF roc: {:.3f}".format(roc_auc_score(train_df["target"], oof)))
+
     sns.kdeplot(pd.Series(preds.cpu().numpy().reshape(-1,)))
     plt.savefig(f"{outdir}/kde_No{No}_{fig_size}.png")
     # Saving OOF predictions so stacking would be easier
@@ -192,6 +190,16 @@ def main():
     )
     sub["target"] = preds.cpu().numpy().reshape(-1,)
     sub.to_csv(f"{outdir}/submission_No{No}_{fig_size}.csv", index=False)
+    print(
+        "OOF roc: {:.3f}".format(
+            roc_auc_score(train_df["target"].values.astype(int), oof)
+        )
+    )
+    print(
+        "OOF acc: {:.3f}".format(
+            accuracy_score(train_df["target"].values.astypr(int), oof > 0.5)
+        )
+    )
 
 
 if __name__ == "__main__":

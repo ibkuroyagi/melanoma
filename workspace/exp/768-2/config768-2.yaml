@@ -12,8 +12,12 @@ lr: 0.001
 microscope: 0.25
 n_split: 5
 num_workers: 4
+pass_list:
+- 1
+- 2
+- 3
 patience: 2
-pin_memory: true
+pin_memory: false
 pretrained: efficientnet-b0
 resume: null
 seed: 42

@@ -2,18 +2,22 @@
 TTA: 3
 batch_size: 64
 config: config/config256-0.yaml
-epoch: 20
+epoch: 40
 es_patience: 5
 factor: 0.3
 fig_size: 256
-hair: 1
+hair: 4
 in_features: 1280
 lr: 0.001
 microscope: 0.25
 n_split: 5
 num_workers: 4
+pass_list:
+- 1
+- 2
+- 3
 patience: 2
-pin_memory: true
+pin_memory: false
 pretrained: efficientnet-b1
 resume: null
 seed: 42
