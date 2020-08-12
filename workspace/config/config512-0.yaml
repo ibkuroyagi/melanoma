@@ -7,8 +7,8 @@ in_features: 1280
 pretrained: efficientnet-b0
 # training related
 n_split: 5
-batch_size: 24
-epoch: 30
+batch_size: 16
+epoch: 40
 lr: 0.001
 es_patience: 5
 patience: 2
@@ -16,4 +16,4 @@ factor: 0.3
 TTA: 3
 # dataset related
 microscope: 0.25
-hair: 1
+hair: 4

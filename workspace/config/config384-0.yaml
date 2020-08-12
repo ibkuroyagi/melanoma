@@ -6,7 +6,7 @@ pin_memory: False
 # training related
 n_split: 5
 batch_size: 32
-epoch: 20
+epoch: 30
 lr: 0.001
 es_patience: 5
 patience: 2
@@ -17,4 +17,4 @@ in_features: 1280
 pretrained: efficientnet-b1
 # dataset related
 microscope: 0.25
-hair: 1
+hair: 4

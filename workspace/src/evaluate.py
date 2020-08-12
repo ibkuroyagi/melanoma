@@ -174,7 +174,7 @@ def main():
                     ] += z_test
             preds /= config["TTA"]
 
-        del val, val_loader, x_val, y_val
+        del val, val_loader, x_val, y_val, x_test
         gc.collect()
     preds /= skf.n_splits
 
@@ -197,7 +197,7 @@ def main():
     )
     print(
         "OOF acc: {:.3f}".format(
-            accuracy_score(train_df["target"].values.astypr(int), oof > 0.5)
+            accuracy_score(train_df["target"].values.astype(int), oof > 0.5)
         )
     )
 

@@ -1,12 +1,12 @@
 'No': 0
 TTA: 3
-batch_size: 24
+batch_size: 16
 config: config/config512-0.yaml
 epoch: 30
 es_patience: 5
 factor: 0.3
 fig_size: 512
-hair: 1
+hair: 4
 in_features: 1280
 lr: 0.001
 microscope: 0.25

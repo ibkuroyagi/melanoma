@@ -1,8 +1,8 @@
 'No': 1
 TTA: 3
-batch_size: 64
+batch_size: 32
 config: config/config256-1.yaml
-epoch: 20
+epoch: 40
 es_patience: 5
 factor: 0.3
 fig_size: 256
