@@ -36,6 +36,5 @@ if [ "${stage}" -le 1 ] && [ "${stop_stage}" -ge 1 ]; then
         --fig_size ${fig_size} \
         --No ${No}
 fi
-# sbatch -c 4 -n 4 --gres=gpu:1 -J 384-2 ./run.sh --fig_size 384 --No 2
-# sbatch -J 384 ./run.sh --fig_size 384
+# sbatch -c 4 -n 4 --gres=gpu:1 -J 768-1 ./run.sh --fig_size 768 --No 1
 # sbatch -c 4 -n 4 --gres=gpu:1 -J 256-2 ./run.sh --fig_size 256 --No 2 --stage 1
