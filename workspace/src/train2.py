@@ -44,6 +44,8 @@ def get_arguments():
     parser.add_argument(
         "--fig_size", type=int, default=0, help="hte number of experiments."
     )
+    parser.add_argument("--TTA", type=int, default=3, help="the number of TTA.")
+    parser.add_argument("--val", action="store_false")
     parser.add_argument(
         "--resume", type=str, nargs="?", help="checkpoint path to resume."
     )

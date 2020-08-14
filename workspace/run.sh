@@ -5,9 +5,11 @@
 n_cpu=16
 n_gpu=1
 No=0
+TTA=3
 fig_size=256
 stage=0
 stop_stage=10
+log_dir=exp/log
 . utils/parse_options.sh || exit 1
 
 config="config/config${fig_size}-${No}.yaml"
@@ -25,16 +27,20 @@ if [ "${stage}" -le 0 ] && [ "${stop_stage}" -ge 0 ]; then
         --config ${config} \
         --fig_size ${fig_size} \
         --No ${No} \
-        --pass_list 1 2 3
+        # --pass_list 1 2 3
 fi
 
 if [ "${stage}" -le 1 ] && [ "${stop_stage}" -ge 1 ]; then
     echo "Stage 1: Evaluate model"
-    # ${train_cmd} --num_threads ${n_cpu} --gpu ${n_gpu} --p hpc "${log_dir}/train.log" \
+    [ ! -e "${log_dir}/ensemble" ] && mkdir -p "${log_dir}/ensemble"
+    # ${train_cmd} --num_threads ${n_cpu} "${log_dir}/${fig_size}-${No}-TTA${TTA}.log" \
     python src/evaluate.py \
         --config ${config} \
         --fig_size ${fig_size} \
-        --No ${No}
+        --No ${No} \
+        --TTA ${TTA} \
+        --val
 fi
-# sbatch -c 4 -n 4 --gres=gpu:1 -J 768-1 ./run.sh --fig_size 768 --No 1
+
+# sbatch -c 4 -n 4 --gres=gpu:1 -J 512-1 ./run.sh --fig_size 512 --No 1 --stage 1 --TTA 5
 # sbatch -c 4 -n 4 --gres=gpu:1 -J 256-2 ./run.sh --fig_size 256 --No 2 --stage 1

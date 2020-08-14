@@ -1,6 +1,6 @@
 'No': 1
 TTA: 3
-batch_size: 12
+batch_size: 10
 config: config/config768-1.yaml
 epoch: 30
 es_patience: 5
@@ -20,5 +20,5 @@ patience: 2
 pin_memory: false
 pretrained: efficientnet-b0
 resume: null
-seed: 42
+seed: 41
 verbose: 1

@@ -1,8 +1,8 @@
 'No': 0
 TTA: 3
-batch_size: 16
+batch_size: 12
 config: config/config512-0.yaml
-epoch: 30
+epoch: 40
 es_patience: 5
 factor: 0.3
 fig_size: 512
@@ -16,7 +16,7 @@ pass_list:
 - 10
 patience: 2
 pin_memory: false
-pretrained: efficientnet-b0
+pretrained: efficientnet-b1
 resume: null
-seed: 42
+seed: 41
 verbose: 1
