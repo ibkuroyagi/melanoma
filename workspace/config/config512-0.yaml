@@ -1,7 +1,7 @@
 # global related
 seed: 41
 # pyrotch related
-num_workers: 4
+num_workers: 1
 pin_memory: False
 in_features: 1280
 pretrained: efficientnet-b1

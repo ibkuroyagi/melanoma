@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import argparse
 import codecs
 import logging
 import os
@@ -14,7 +13,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from sklearn.metrics import accuracy_score, roc_auc_score
-from sklearn.model_selection import StratifiedKFold, GroupKFold, KFold
+from sklearn.model_selection import KFold
 
 from torch.utils.data import DataLoader
 import torchtoolbox.transform as transforms
@@ -31,8 +30,6 @@ def main():
     # get arguments
     args = get_arguments()
     No = args.No
-    val_flag = args.val  # default True
-    print(val_flag)
     if not torch.cuda.is_available():
         device = torch.device("cpu")
     else:
@@ -132,15 +129,24 @@ def main():
     skf = KFold(n_splits=config["n_split"], shuffle=True, random_state=config["seed"])
     for fold, (idxT, idxV) in enumerate(skf.split(np.arange(15)), 1):
         print("=" * 20, "Fold", fold, "=" * 20)
-        if val_flag:
+        for _ in range(config["TTA"]):
             val_idx = train_df.loc[train_df["fold"].isin(idxV)].index
-            val = MelanomaDataset(
-                df=train_df.iloc[val_idx].reset_index(drop=True),
-                imfolder=f"../input/jpeg-melanoma-{fig_size}x{fig_size}/train/",
-                train=True,
-                transforms=test_transform,
-                meta_features=meta_features,
-            )
+            if config["TTA"] == 1:
+                val = MelanomaDataset(
+                    df=train_df.iloc[val_idx].reset_index(drop=True),
+                    imfolder=f"../input/jpeg-melanoma-{fig_size}x{fig_size}/train/",
+                    train=True,
+                    transforms=test_transform,
+                    meta_features=meta_features,
+                )
+            else:
+                val = MelanomaDataset(
+                    df=train_df.iloc[val_idx].reset_index(drop=True),
+                    imfolder=f"../input/jpeg-melanoma-{fig_size}x{fig_size}/train/",
+                    train=True,
+                    transforms=train_transform,
+                    meta_features=meta_features,
+                )
             val_loader = DataLoader(
                 dataset=val,
                 batch_size=config["batch_size"],
@@ -151,20 +157,19 @@ def main():
             val_preds = torch.zeros(
                 (len(val_idx), 1), dtype=torch.float32, device=device
             )
-        model_path = os.path.join(outdir, f"model_No{No}_fold{fold}_{fig_size}.pt")
-        model = Net(
-            arch=arch,
-            n_meta_features=len(meta_features),
-            in_features=config["in_features"],
-        )  # New model for each fold
-        model = model.to(device)
-        if fold == 1:
-            logging.info(model)
-        model = torch.load(model_path)  # Loading best model of this fold
-        model.eval()  # switch model to the evaluation mode
+            model_path = os.path.join(outdir, f"model_No{No}_fold{fold}_{fig_size}.pt")
+            model = Net(
+                arch=arch,
+                n_meta_features=len(meta_features),
+                in_features=config["in_features"],
+            )  # New model for each fold
+            model = model.to(device)
+            if fold == 1:
+                logging.info(model)
+            model = torch.load(model_path)  # Loading best model of this fold
+            model.eval()  # switch model to the evaluation mode
 
-        with torch.no_grad():
-            if val_flag:
+            with torch.no_grad():
                 # Predicting on validation set once again to obtain data for OOF
                 for j, (x_val, y_val) in enumerate(val_loader):
                     x_val[0] = x_val[0].to(device).float()
@@ -178,8 +183,8 @@ def main():
                     ] = val_pred
                 oof[val_idx] = val_preds.cpu().numpy()
 
-            # Predicting on test set
-            for _ in range(config["TTA"]):
+                # Predicting on test set
+
                 print("TTA loop counter")
                 for i, x_test in enumerate(test_loader):
                     x_test[0] = x_test[0].to(device).float()
@@ -198,21 +203,20 @@ def main():
 
     sns.kdeplot(pd.Series(preds.cpu().numpy().reshape(-1,)))
     plt.savefig(f"{outdir}/kde_No{No}_{fig_size}.png")
-    if val_flag:
-        # Saving OOF predictions so stacking would be easier
-        pd.Series(oof.reshape(-1,)).to_csv(
-            f"{outdir}/oof_No{No}_{fig_size}_TTA{config['TTA']}.csv", index=False
+    # Saving OOF predictions so stacking would be easier
+    pd.Series(oof.reshape(-1,)).to_csv(
+        f"{outdir}/oof_No{No}_{fig_size}_TTA{config['TTA']}.csv", index=False
+    )
+    print(
+        "OOF roc: {:.3f}".format(
+            roc_auc_score(train_df["target"].values.astype(int), oof)
         )
-        print(
-            "OOF roc: {:.3f}".format(
-                roc_auc_score(train_df["target"].values.astype(int), oof)
-            )
+    )
+    print(
+        "OOF acc: {:.3f}".format(
+            accuracy_score(train_df["target"].values.astype(int), oof > 0.5)
         )
-        print(
-            "OOF acc: {:.3f}".format(
-                accuracy_score(train_df["target"].values.astype(int), oof > 0.5)
-            )
-        )
+    )
     sub = pd.read_csv(
         f"../input/jpeg-melanoma-{fig_size}x{fig_size}/sample_submission.csv"
     )

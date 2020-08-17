@@ -5,7 +5,7 @@
 n_cpu=16
 n_gpu=1
 No=0
-TTA=3
+TTA=1
 fig_size=256
 stage=0
 stop_stage=10
@@ -27,7 +27,7 @@ if [ "${stage}" -le 0 ] && [ "${stop_stage}" -ge 0 ]; then
         --config ${config} \
         --fig_size ${fig_size} \
         --No ${No} \
-        # --pass_list 1 2 3
+        --pass_list 1 2 3
 fi
 
 if [ "${stage}" -le 1 ] && [ "${stop_stage}" -ge 1 ]; then
@@ -38,9 +38,8 @@ if [ "${stage}" -le 1 ] && [ "${stop_stage}" -ge 1 ]; then
         --config ${config} \
         --fig_size ${fig_size} \
         --No ${No} \
-        --TTA ${TTA} \
-        --val
+        --TTA ${TTA}
 fi
 
-# sbatch -c 4 -n 4 --gres=gpu:1 -J 512-1 ./run.sh --fig_size 512 --No 1 --stage 1 --TTA 5
-# sbatch -c 4 -n 4 --gres=gpu:1 -J 256-2 ./run.sh --fig_size 256 --No 2 --stage 1
+# sbatch -c 4 -n 4 --gres=gpu:1 -J 256-1 ./run.sh --fig_size 256 --No 3 --stage 1 --TTA 5
+# sbatch -c 4 -n 4 --gres=gpu:1 -J 768-1-3 ./run.sh --fig_size 768 --No 2 --stage 0

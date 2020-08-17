@@ -11,7 +11,7 @@ in_features: 1280
 lr: 0.001
 microscope: 0.25
 n_split: 5
-num_workers: 4
+num_workers: 1
 pass_list:
 - 10
 patience: 2

@@ -1,0 +1,22 @@
+'No': 3
+TTA: 3
+batch_size: 32
+config: config/config384-3.yaml
+epoch: 40
+es_patience: 5
+factor: 0.3
+fig_size: 384
+hair: 4
+in_features: 1280
+lr: 0.001
+microscope: 0.25
+n_split: 5
+num_workers: 1
+pass_list:
+- 10
+patience: 2
+pin_memory: false
+pretrained: efficientnet-b0
+resume: null
+seed: 3
+verbose: 1

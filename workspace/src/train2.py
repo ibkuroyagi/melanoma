@@ -17,7 +17,7 @@ from tqdm import tqdm
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
-from sklearn.model_selection import StratifiedKFold, GroupKFold, KFold
+from sklearn.model_selection import KFold
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torchtoolbox.transform as transforms
@@ -30,7 +30,6 @@ from models.net import Net
 from utils.seed import seed_everything
 
 
-# %%
 def get_arguments():
     """Get arguments."""
     parser = argparse.ArgumentParser(description="Training.")
@@ -45,7 +44,6 @@ def get_arguments():
         "--fig_size", type=int, default=0, help="hte number of experiments."
     )
     parser.add_argument("--TTA", type=int, default=3, help="the number of TTA.")
-    parser.add_argument("--val", action="store_false")
     parser.add_argument(
         "--resume", type=str, nargs="?", help="checkpoint path to resume."
     )

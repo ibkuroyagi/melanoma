@@ -1,0 +1,19 @@
+# global related
+seed: 3
+# pyrotch related
+num_workers: 1
+pin_memory: False
+in_features: 1280
+pretrained: efficientnet-b0
+# training related
+n_split: 5
+batch_size: 32
+epoch: 40
+lr: 0.001
+es_patience: 5
+patience: 2
+factor: 0.3
+TTA: 3
+# dataset related
+microscope: 0.25
+hair: 4
